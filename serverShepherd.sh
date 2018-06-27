@@ -24,9 +24,8 @@ chmod +x serverHerder_CA.sh
 # Log File Creator
 now=$(date +"%m%d%y") #set timestamp as variable
 outputFile="$outputDir/serverDetails.$now.log" #create output file
-
 #######################################
 ###     CodeBlock: Init variables
 #######################################
 # Command Variables
-./serverHerder_CA.sh "$outputFile"
+./serverHerder_CA.sh "$outputFile" "$curServ"

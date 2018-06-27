@@ -3,6 +3,8 @@
 #######################################
 # Define function variables from passed variables
 outputFile=$1
+curServ=$2
+now=$(date)
 # Init Variables
 comm_Net_OSX="netstat -anvp tcp"
 comm_Net_CA="netstat -nlptu"
@@ -14,7 +16,8 @@ headerInd=(1 4 7) #### <--- CA
 #######################################
 ###     CodeBlock: Read ports and app info
 #######################################
-printf "localAddress, portNumber, protocol, boundApp, appDescription;\r\n"  > "$outputFile"
+printf "Server harvest: $curServ on $(date)" > "$outputFile"
+printf "localAddress, portNumber, protocol, boundApp, appDescription;\r\n"  >> "$outputFile"
 $comm_Net_CA | grep 'LISTEN' |while read -r line; do #### <--- for CA
   substring[0]=$(echo $line | cut -d ' ' -f${headerInd[0]})       #header ind 0 = 1, meaning take the Protocol
   substring[1]=$(echo $line | cut -d ' ' -f${headerInd[1]})       #header ind 1, meaning take the Local IP
@@ -49,4 +52,6 @@ $comm_Net_CA | grep 'LISTEN' |while read -r line; do #### <--- for CA
 
   ### Write output File
   printf "${substring[1]}, $port, ${substring[0]}, $appname, $desc;\r\n"  >> "$outputFile"
+
+  break
 done
