@@ -1,4 +1,0 @@
- this is a test of push
-:wq
-i:wq
-
