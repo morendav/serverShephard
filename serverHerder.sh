@@ -1,23 +1,23 @@
 #######################################
 ###     CodeBlock: Variables
 #######################################
-# Define function variables from passed variables
+# Define script variables that were passed as new handles
 outputFile=$1
 curServ=$2
 now=$(date)
-# Init Variables
-comm_Net_OSX="netstat -anvp tcp"
+# Init command variables
 comm_Net_CA="netstat -nlptu"
 comm_App_lsb="ls -l /proc/"
 comm_App_lse="/exe"
 comm_App_whatisb="whatis "
-headerInd=(1 4 7) #### <--- CA
+# Init Enviornment Specific variables
+headerInd=(1 4 7) #### <--- RedHat deployment, header indices for comm_Net_CA command
 
 #######################################
 ###     CodeBlock: Read ports and app info
 #######################################
-printf "Server harvest: $curServ on $(date)" > "$outputFile"
-printf "localAddress, portNumber, protocol, boundApp, appDescription;\r\n"  >> "$outputFile"
+printf "Server harvest from $curServ on $(date)\r\n" > "$outputFile"
+printf "localAddress, portNumber, protocol, boundApp, appDescription\r\n"  >> "$outputFile"
 $comm_Net_CA | grep 'LISTEN' |while read -r line; do #### <--- for CA
   substring[0]=$(echo $line | cut -d ' ' -f${headerInd[0]})       #header ind 0 = 1, meaning take the Protocol
   substring[1]=$(echo $line | cut -d ' ' -f${headerInd[1]})       #header ind 1, meaning take the Local IP
@@ -51,7 +51,5 @@ $comm_Net_CA | grep 'LISTEN' |while read -r line; do #### <--- for CA
   fi
 
   ### Write output File
-  printf "${substring[1]}, $port, ${substring[0]}, $appname, $desc;\r\n"  >> "$outputFile"
-
-  break
+  printf "${substring[1]}, $port, ${substring[0]}, $appname, $desc\r\n"  >> "$outputFile"
 done

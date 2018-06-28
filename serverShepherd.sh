@@ -1,11 +1,11 @@
 #!/bin/bash
 #######################################
 # Server Shepherd
-# Date: 06.22.2018
+# Date: 06.2018
 #
-#   creep through IP addresses and ports, report application bound to port on server
+#   creep through IP addresses and ports, report application bound to port on server. See readme for more information
 #   Output:
-#       ./Output/serverShepherdOutput*.log
+#       ./Output/serverDetails.log
 ###   Run script as follows
 ###     chmod +x <namehere>.sh
 ###     ./<namehere>.sh
@@ -22,8 +22,7 @@ outputDir="$curDir/serverShepherdOutput"
 # Setup peripheral scripts to execute
 chmod +x serverHerder_CA.sh
 # Log File Creator
-now=$(date +"%m%d%y") #set timestamp as variable
-outputFile="$outputDir/serverDetails.$now.log" #create output file
+outputFile="$outputDir/serverDetails.log" #create output file
 #######################################
 ###     CodeBlock: Init variables
 #######################################
