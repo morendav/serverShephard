@@ -16,9 +16,9 @@ headerInd=(1 4 7) #### <--- RedHat deployment, header indices for comm_Net_CA co
 #######################################
 ###     CodeBlock: Read ports and app info
 #######################################
-printf "Server harvest from $curServ on $(date)\r\n" > "$outputFile"
-printf "localAddress, portNumber, protocol, boundApp, appDescription\r\n"  >> "$outputFile"
-$comm_Net_CA | grep 'LISTEN' |while read -r line; do #### <--- for CA
+printf "### Server details herded from $curServ\r\n### On $(date)\r\n" > "$outputFile"
+printf "localAddress, portNumber, protocol, boundApp, appExeDirectory, appDescription\r\n"  >> "$outputFile"
+$comm_Net_CA | grep 'LISTEN' | while read -r line; do #### <--- for CA
   substring[0]=$(echo $line | cut -d ' ' -f${headerInd[0]})       #header ind 0 = 1, meaning take the Protocol
   substring[1]=$(echo $line | cut -d ' ' -f${headerInd[1]})       #header ind 1, meaning take the Local IP
   substring[2]=$(echo $line | cut -d ' ' -f${headerInd[2]})       #header ind 2, meaning take the PID
@@ -35,11 +35,9 @@ $comm_Net_CA | grep 'LISTEN' |while read -r line; do #### <--- for CA
 
   ### Feed pid number to command for app name
   comm[0]=$(printf "$comm_App_lsb$pid$comm_App_lse")             #Define the command variable set, comm 0 = ls -l /prod/<PID>/exe
-  ind2=$(awk -F" " '{print NF-1}' <<< $(${comm[0]})); let "ind2=ind2+1" #delimited output by space, find app name as being last field
-  app=$(${comm[0]} | cut -d " " -f$ind2)                          #Run the command, delmit by spaces, set app to the last field in the output of the ls command
-  ind2=$(awk -F"/" '{print NF-1}' <<< $(echo $app)); let "ind2=ind2+1" #output in app looks like /usr/sbin/rpcbind <-- set last / field to appname
-
-  appname=$(echo $app | cut -d "/" -f$ind2)
+  appExeDir=$(${comm[0]} | cut -d '/' -f2- | cut -d ">" -f2)
+  ind1=$(awk -F"/" '{print NF}' <<< $appExeDir)
+  appname=$(echo $appExeDir | cut -d "/" -f$ind1)
   comm[1]=$(printf "$comm_App_whatisb$appname")
 
   ### If whatis provides no new context, report ps -ef as application details
@@ -51,5 +49,6 @@ $comm_Net_CA | grep 'LISTEN' |while read -r line; do #### <--- for CA
   fi
 
   ### Write output File
-  printf "${substring[1]}, $port, ${substring[0]}, $appname, $desc\r\n"  >> "$outputFile"
+  # in Format: "localAddress, portNumber, protocol, boundApp, appExeDirectory, appDescription\r\n"
+  printf "${substring[1]}, $port, ${substring[0]}, $appname, $appExeDir, $desc\r\n"  >> "$outputFile"
 done

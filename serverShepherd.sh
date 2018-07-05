@@ -20,11 +20,11 @@ curServ=$(hostname)
 mkdir "$curDir/serverShepherdOutput"
 outputDir="$curDir/serverShepherdOutput"
 # Setup peripheral scripts to execute
-chmod +x serverHerder_CA.sh
+chmod +x serverHerder.sh
 # Log File Creator
 outputFile="$outputDir/serverDetails.log" #create output file
 #######################################
 ###     CodeBlock: Init variables
 #######################################
 # Command Variables
-./serverHerder_CA.sh "$outputFile" "$curServ"
+./serverHerder.sh "$outputFile" "$curServ"
